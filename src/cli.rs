@@ -1,4 +1,4 @@
-use crate::commands::sync::SyncArgs;
+use crate::commands::{start, sync};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser, Debug)]
@@ -10,5 +10,6 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
-    Sync(SyncArgs),
+    Sync(sync::Args),
+    Start(start::Args),
 }

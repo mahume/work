@@ -8,6 +8,9 @@ fn main() {
     let args = Cli::parse();
 
     match args.command {
+        Commands::Start(_) => {
+            println!("starting");
+        }
         Commands::Sync(args) => {
             commands::sync::handle(args);
         }

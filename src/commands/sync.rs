@@ -4,7 +4,7 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-pub struct SyncArgs {
+pub struct Args {
     #[arg(short, long)]
     pub repos: Vec<PathBuf>,
 }
