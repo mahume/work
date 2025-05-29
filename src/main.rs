@@ -1,23 +1,35 @@
-use clap::Parser;
+use std::path::PathBuf;
 
-/// Simple program to greet a person
+use clap::{Parser, Subcommand};
+
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-struct Args {
-    /// Name of the person to greet
-    #[arg(short, long)]
-    name: String,
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
 
-    /// Number of times to greet
-    #[arg(short, long, default_value_t = 1)]
-    count: u8,
+#[derive(Subcommand, Debug)]
+enum Commands {
+    Sync(SyncArgs),
+}
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct SyncArgs {
+    #[arg(short, long)]
+    repos: Vec<PathBuf>,
 }
 
 fn main() {
-    let args = Args::parse();
+    let args = Cli::parse();
 
-    for _ in 0..args.count {
-        println!("Hello {}!", args.name);
+    match args.command {
+        Commands::Sync(args) => {
+            for repo in args.repos {
+                println!("Fetching {}!", repo.display());
+            }
+        }
     }
 }
 
@@ -27,10 +39,10 @@ mod tests {
     use assert_cmd::Command;
 
     #[test]
-    fn test_arg_exists() {
+    fn test_sync_command() {
         let mut cmd = Command::cargo_bin("work").unwrap();
-        let assert = cmd.args(["-n", "Mike"]).assert();
+        let assert = cmd.args(["sync", "--repos", "path/to/repo"]).assert();
 
-        assert.success().code(0).stdout("Hello Mike!\n");
+        assert.success().code(0).stdout("Fetching path/to/repo!\n");
     }
 }
